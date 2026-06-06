@@ -494,21 +494,6 @@ def mostrar_metricas(ranking: pd.DataFrame, detalle_general: pd.DataFrame, resul
 def mostrar_dashboard(ranking: pd.DataFrame, detalle_general: pd.DataFrame, resultados: pd.DataFrame):
     mostrar_metricas(ranking, detalle_general, resultados)
 
-    plantilla_path = OUTPUT_DIR / "Plantilla_Jugador.xlsx"
-
-    if plantilla_path.exists():
-        with open(plantilla_path, "rb") as archivo:
-            st.download_button(
-                label="📄 Descargar plantilla de jugador",
-                data=archivo,
-                file_name="Plantilla_Jugador.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-    else:
-        st.warning(
-            "⚠️ No se encontró Output/Plantilla_Jugador.xlsx. Ejecuta primero: py crear_plantilla.py"
-        )
-
     st.markdown("## 🏆 Podio actual")
 
     if len(ranking) >= 3:
@@ -695,7 +680,7 @@ Output/""",
     st.sidebar.write("🎯 Marcador exacto: 5 puntos")
     st.sidebar.write("✅ Resultado correcto: 3 puntos")
     st.sidebar.write("❌ Resultado incorrecto: 0 puntos")
-    st.sidebar.markdown("### DESCARGA TEST 123")
+    st.sidebar.markdown("### 📄 Plantilla de jugadores")
 
     plantilla_path = OUTPUT_DIR / "Plantilla_Jugador.xlsx"
 
