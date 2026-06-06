@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from io import BytesIO
 from datetime import datetime
+from urllib.parse import quote
 
 import pandas as pd
 import streamlit as st
@@ -14,6 +15,8 @@ OUTPUT_DIR = BASE_DIR / "Output"
 
 PARTIDOS_FILE = DATA_DIR / "partidos.xlsx"
 RESULTADOS_FILE = DATA_DIR / "resultados.xlsx"
+
+URL_DASHBOARD = "https://totogolfamiliar.streamlit.app"
 
 COLUMNAS_PARTIDOS = ["id_partido", "grupo", "local", "visitante"]
 COLUMNAS_RESULTADOS = ["id_partido", "goles_local_real", "goles_visitante_real"]
@@ -572,9 +575,24 @@ def mostrar_dashboard(ranking: pd.DataFrame, detalle_general: pd.DataFrame, resu
 
     st.markdown("## 📲 Resumen para WhatsApp")
     resumen = generar_resumen_whatsapp(ranking)
+
+    resumen_con_url = (
+        f"{resumen}\n\n"
+        f"🌐 Ver clasificación completa:\n{URL_DASHBOARD}"
+    )
+
     st.markdown(
-        f"<div class='whatsapp-box'>{resumen}</div>",
+        f"<div class='whatsapp-box'>{resumen_con_url}</div>",
         unsafe_allow_html=True,
+    )
+
+    mensaje_whatsapp = quote(resumen_con_url)
+    whatsapp_url = f"https://wa.me/?text={mensaje_whatsapp}"
+
+    st.link_button(
+        "📲 Compartir ranking por WhatsApp",
+        whatsapp_url,
+        use_container_width=True,
     )
 
 
