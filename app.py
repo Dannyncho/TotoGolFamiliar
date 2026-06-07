@@ -49,29 +49,68 @@ def aplicar_estilos():
         }
         .titulo-principal {
             text-align: center;
-            padding: 18px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #0f5132, #198754);
-            color: white;
+            padding: 22px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #0b5ed7 0%, #ffffff 48%, #dc3545 100%);
+            color: #102030;
             margin-bottom: 20px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            border: 3px solid #f4d03f;
+        }
+        .titulo-principal h1 {
+            margin-bottom: 4px;
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
         .subtitulo {
             text-align: center;
-            color: #e9f7ef;
+            color: #102030;
             font-size: 18px;
+            font-weight: 600;
+        }
+        .podio-card {
+            background: #ffffff;
+            padding: 22px;
+            border-radius: 22px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border: 1px solid #e5e7eb;
+            min-height: 160px;
+        }
+        .podio-medalla {
+            font-size: 42px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .podio-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+        .podio-jugador {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f5132;
+            margin-bottom: 6px;
+        }
+        .podio-puntos {
+            font-size: 22px;
+            font-weight: 700;
+            color: #dc3545;
         }
         .card-periodista {
-            background: white;
+            background: #ffffff;
             padding: 22px;
             border-radius: 18px;
-            border-left: 8px solid #198754;
+            border-left: 8px solid #0b5ed7;
             box-shadow: 0 6px 20px rgba(0,0,0,0.10);
             font-size: 19px;
             line-height: 1.6;
         }
         .whatsapp-box {
-            background: #e7f8ef;
+            background: #f7fff9;
             padding: 18px;
             border-radius: 16px;
             border: 1px solid #b7ebcd;
@@ -499,23 +538,25 @@ def mostrar_dashboard(ranking: pd.DataFrame, detalle_general: pd.DataFrame, resu
     if len(ranking) >= 3:
         col1, col2, col3 = st.columns(3)
 
-        col1.metric(
-            "🥇 Primer Lugar",
-            ranking.iloc[0]["Jugador"],
-            f"{int(ranking.iloc[0]['Puntos'])} pts"
-        )
+        podio = [
+            (col1, "🥇", "Primer Lugar", ranking.iloc[0]["Jugador"], int(ranking.iloc[0]["Puntos"])),
+            (col2, "🥈", "Segundo Lugar", ranking.iloc[1]["Jugador"], int(ranking.iloc[1]["Puntos"])),
+            (col3, "🥉", "Tercer Lugar", ranking.iloc[2]["Jugador"], int(ranking.iloc[2]["Puntos"])),
+        ]
 
-        col2.metric(
-            "🥈 Segundo Lugar",
-            ranking.iloc[1]["Jugador"],
-            f"{int(ranking.iloc[1]['Puntos'])} pts"
-        )
-
-        col3.metric(
-            "🥉 Tercer Lugar",
-            ranking.iloc[2]["Jugador"],
-            f"{int(ranking.iloc[2]['Puntos'])} pts"
-        )
+        for columna, medalla, titulo, jugador, puntos in podio:
+            with columna:
+                st.markdown(
+                    f"""
+                    <div class="podio-card">
+                        <div class="podio-medalla">{medalla}</div>
+                        <div class="podio-titulo">{titulo}</div>
+                        <div class="podio-jugador">{jugador}</div>
+                        <div class="podio-puntos">{puntos} pts</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
         st.divider()
     else:
