@@ -47,59 +47,79 @@ def aplicar_estilos():
         .main {
             background: linear-gradient(180deg, #f7fafc 0%, #eef2f7 100%);
         }
+
+        section[data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #ffffff 0%, #f5f8ff 100%);
+            border-right: 1px solid #e5e7eb;
+        }
+
         .titulo-principal {
             text-align: center;
-            padding: 22px;
+            padding: 24px 18px;
             border-radius: 22px;
-            background: linear-gradient(135deg, #0b5ed7 0%, #ffffff 48%, #dc3545 100%);
-            color: #102030;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-            border: 3px solid #f4d03f;
+            background: linear-gradient(135deg, #3157d5 0%, #f8fbff 48%, #d64b5f 100%);
+            color: #071226;
+            margin-bottom: 22px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+            border: 3px solid #f1d232;
         }
+
         .titulo-principal h1 {
-            margin-bottom: 4px;
-            font-size: 42px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            margin-bottom: 8px;
         }
+
         .subtitulo {
             text-align: center;
-            color: #102030;
+            color: #071226;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
         }
+
         .podio-card {
             background: #ffffff;
             padding: 22px;
             border-radius: 22px;
             text-align: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
             border: 1px solid #e5e7eb;
-            min-height: 160px;
+            min-height: 165px;
         }
+
+        .podio-card-oro {
+            border: 2px solid #f1c40f;
+            background: linear-gradient(180deg, #fffaf0 0%, #ffffff 100%);
+        }
+
         .podio-medalla {
             font-size: 42px;
             line-height: 1;
             margin-bottom: 8px;
         }
+
         .podio-titulo {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 17px;
+            font-weight: 800;
             color: #34495e;
             margin-bottom: 8px;
+            text-transform: uppercase;
         }
+
         .podio-jugador {
             font-size: 28px;
-            font-weight: 800;
-            color: #0f5132;
+            font-weight: 900;
+            color: #0b5ed7;
             margin-bottom: 6px;
         }
+
         .podio-puntos {
             font-size: 22px;
-            font-weight: 700;
+            font-weight: 800;
             color: #dc3545;
         }
+
         .card-periodista {
             background: #ffffff;
             padding: 22px;
@@ -109,6 +129,7 @@ def aplicar_estilos():
             font-size: 19px;
             line-height: 1.6;
         }
+
         .whatsapp-box {
             background: #f7fff9;
             padding: 18px;
@@ -117,11 +138,25 @@ def aplicar_estilos():
             font-family: monospace;
             white-space: pre-wrap;
         }
+
         .stMetric {
             background: white;
             padding: 14px;
             border-radius: 16px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        div[data-testid="stDownloadButton"] button {
+            border-radius: 12px;
+            border: 1px solid #bcd0ff;
+            font-weight: 700;
+        }
+
+        div[data-testid="stLinkButton"] a {
+            border-radius: 12px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #198754, #12b76a);
+            color: white;
         }
         </style>
         """,
@@ -539,16 +574,16 @@ def mostrar_dashboard(ranking: pd.DataFrame, detalle_general: pd.DataFrame, resu
         col1, col2, col3 = st.columns(3)
 
         podio = [
-            (col1, "🥇", "Primer Lugar", ranking.iloc[0]["Jugador"], int(ranking.iloc[0]["Puntos"])),
-            (col2, "🥈", "Segundo Lugar", ranking.iloc[1]["Jugador"], int(ranking.iloc[1]["Puntos"])),
-            (col3, "🥉", "Tercer Lugar", ranking.iloc[2]["Jugador"], int(ranking.iloc[2]["Puntos"])),
+            (col1, "🥈", "Segundo Lugar", ranking.iloc[1]["Jugador"], int(ranking.iloc[1]["Puntos"]), "podio-card"),
+            (col2, "🥇", "Primer Lugar", ranking.iloc[0]["Jugador"], int(ranking.iloc[0]["Puntos"]), "podio-card podio-card-oro"),
+            (col3, "🥉", "Tercer Lugar", ranking.iloc[2]["Jugador"], int(ranking.iloc[2]["Puntos"]), "podio-card"),
         ]
 
-        for columna, medalla, titulo, jugador, puntos in podio:
+        for columna, medalla, titulo, jugador, puntos, clase in podio:
             with columna:
                 st.markdown(
                     f"""
-                    <div class="podio-card">
+                    <div class="{clase}">
                         <div class="podio-medalla">{medalla}</div>
                         <div class="podio-titulo">{titulo}</div>
                         <div class="podio-jugador">{jugador}</div>
@@ -698,30 +733,15 @@ def preparar_datos() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataF
 
 
 def mostrar_sidebar():
-    st.sidebar.title("⚽ Toto Gol Familiar")
-    st.sidebar.info(
-        "Los datos se leen desde archivos Excel locales dentro de la carpeta data."
-    )
+    st.sidebar.markdown("# ⚽ Toto Gol")
+    st.sidebar.markdown("## Familiar")
+    st.sidebar.caption("Predicciones familiares del Mundial 2026")
 
-    st.sidebar.markdown("### Estructura esperada")
-    st.sidebar.code(
-        """data/
-├── Jugadores/
-│   ├── Danny.xlsx
-│   ├── Maria.xlsx
-│   └── Carlos.xlsx
-├── partidos.xlsx
-└── resultados.xlsx
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 📌 Menú")
 
-Output/""",
-        language="text",
-    )
-
-    st.sidebar.markdown("### Puntuación")
-    st.sidebar.write("🎯 Marcador exacto: 5 puntos")
-    st.sidebar.write("✅ Resultado correcto: 3 puntos")
-    st.sidebar.write("❌ Resultado incorrecto: 0 puntos")
-    st.sidebar.markdown("### 📄 Plantilla de jugadores")
+    st.sidebar.markdown("### 📄 Plantilla")
+    st.sidebar.write("Descarga tu archivo para hacer tus predicciones.")
 
     plantilla_path = OUTPUT_DIR / "Plantilla_Jugador.xlsx"
 
@@ -735,6 +755,19 @@ Output/""",
             )
     else:
         st.sidebar.warning("No se encontró la plantilla.")
+
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 📊 Puntuación")
+    st.sidebar.write("🎯 Marcador exacto: **5 pts**")
+    st.sidebar.write("✅ Resultado correcto: **3 pts**")
+    st.sidebar.write("❌ Incorrecto: **0 pts**")
+
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 🌐 Dashboard público")
+    st.sidebar.markdown(f"[totogolfamiliar.streamlit.app]({URL_DASHBOARD})")
+
+    st.sidebar.markdown("---")
+    st.sidebar.caption("⚽ Toto Gol Familiar")
 
 
 def main():
