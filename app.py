@@ -533,7 +533,14 @@ def obtener_archivos_jugadores() -> list[Path]:
         st.error("❌ No existe la carpeta data/Jugadores.")
         st.stop()
 
-    archivos = sorted(JUGADORES_DIR.glob("*.xlsx"))
+    # Ignorar archivos temporales de Excel.
+    # Cuando un .xlsx está abierto, Excel crea archivos como ~$Gandalf.xlsx.
+    # Esos archivos no son jugadores reales y no deben procesarse.
+    archivos = sorted(
+        archivo
+        for archivo in JUGADORES_DIR.glob("*.xlsx")
+        if not archivo.name.startswith("~$")
+    )
 
     if not archivos:
         st.warning("⚠️ No hay participantes cargados en data/Jugadores.")
@@ -1368,3 +1375,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Filtro para ignorar archivos temporales de Excel (~$archivo.xlsx)
