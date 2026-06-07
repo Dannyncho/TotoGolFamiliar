@@ -122,12 +122,34 @@ def aplicar_estilos():
 
         .card-periodista {
             background: #ffffff;
-            padding: 22px;
-            border-radius: 18px;
+            padding: 24px;
+            border-radius: 20px;
             border-left: 8px solid #0b5ed7;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
             font-size: 19px;
             line-height: 1.6;
+        }
+
+        .cronica-etiqueta {
+            display: inline-block;
+            background: linear-gradient(135deg, #0b5ed7, #3157d5);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .cronica-titulo {
+            font-size: 24px;
+            font-weight: 900;
+            color: #071226;
+            margin-bottom: 10px;
+        }
+
+        .cronica-texto {
+            color: #1f2937;
         }
 
         .whatsapp-box {
@@ -168,8 +190,9 @@ def mostrar_encabezado():
     st.markdown(
         """
         <div class="titulo-principal">
-            <h1>⚽ Toto Gol Familiar</h1>
-            <div class="subtitulo">Dashboard deportivo de predicciones familiares</div>
+            <h1>⚽🏆 TotoGolFamiliar</h1>
+            <div class="subtitulo">Predicciones, rivalidad sana y diversión familiar</div>
+            <div class="subtitulo">🌎 Mundial 2026 · Fase de grupos · 72 partidos</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -601,8 +624,18 @@ def mostrar_dashboard(ranking: pd.DataFrame, detalle_general: pd.DataFrame, resu
 
     ranking_visual = agregar_medallas(ranking)
 
+    def resaltar_filas(fila):
+        posicion = fila["Posición"]
+        if posicion == 1:
+            return ["background-color: #fff3cd; font-weight: bold"] * len(fila)
+        elif posicion == 2:
+            return ["background-color: #f1f3f5; font-weight: bold"] * len(fila)
+        elif posicion == 3:
+            return ["background-color: #fce5cd; font-weight: bold"] * len(fila)
+        return [""] * len(fila)
+
     st.dataframe(
-        ranking_visual,
+        ranking_visual.style.apply(resaltar_filas, axis=1),
         use_container_width=True,
         hide_index=True,
     )
@@ -627,10 +660,16 @@ def mostrar_dashboard(ranking: pd.DataFrame, detalle_general: pd.DataFrame, resu
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
-    st.markdown("## 🎙️ Comentario deportivo")
+    st.markdown("## 🎙️ Crónica deportiva")
     comentario = generar_comentario_periodista(ranking)
     st.markdown(
-        f"<div class='card-periodista'>{comentario}</div>",
+        f"""
+        <div class='card-periodista'>
+            <div class='cronica-etiqueta'>🔥 Análisis automático</div>
+            <div class='cronica-titulo'>La jornada en el TotoGolFamiliar</div>
+            <div class='cronica-texto'>{comentario}</div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -733,9 +772,9 @@ def preparar_datos() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataF
 
 
 def mostrar_sidebar():
-    st.sidebar.markdown("# ⚽ Toto Gol")
+    st.sidebar.markdown("# ⚽🏆 TotoGol")
     st.sidebar.markdown("## Familiar")
-    st.sidebar.caption("Predicciones familiares del Mundial 2026")
+    st.sidebar.caption("Mundial 2026 · Fase de grupos")
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 📌 Menú")
